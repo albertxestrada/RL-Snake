@@ -1,0 +1,7 @@
+# REINFORCE en el Snake · Unidad 3  (Python 3.10–3.12)
+torch                           # CPU basta
+stable-baselines3[extra]>=2.4   # A2C/PPO de referencia; incluye tensorboard, opencv, tqdm y rich
+gymnasium>=1.0
+numpy
+matplotlib                      # plot_results.py
+imageio                         # solo para --watch --gif
