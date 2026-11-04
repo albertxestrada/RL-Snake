@@ -23,7 +23,6 @@ Implementación evaluable de la Unidad 3 (**15 % de la nota**, con evaluación i
 1. **Código:** REINFORCE desde cero en PyTorch, aplicado al Snake con observación y recompensa propias.
 2. **Resultados:** 5 semillas por configuración, medidos en **manzanas por partida** (no en retorno, porque con recompensas distintas los retornos no son comparables).
 3. **Informe:** máximo 4 páginas.
-4. **Defensa:** 5 minutos en clase, con **un cambio en directo** sobre el código.
 
 Reglas: se permite PyTorch y Gymnasium. **No** se permite usar una implementación ya hecha del algoritmo.
 
@@ -61,16 +60,10 @@ Además, hay que **lanzar los experimentos, analizar los resultados, escribir el
 - Diseñar el reparto en 4 personas.
 - Preparar el `requirements.txt` reducido, el README del repo y este documento.
 
-### Qué NO está hecho todavía
-- El repositorio y las ramas.
-- Ningún TODO implementado.
-- Ningún experimento lanzado.
-- El informe y la defensa.
 
 ### Siguiente paso inmediato
 1. Cada persona escribe su nombre en la tabla del equipo y confirma su parte.
-2. Crear el repositorio con una copia del proyecto original y una rama por persona.
-3. Cada uno empieza por su primer TODO (ver sección 5).
+2. Cada uno empieza por su primer TODO (ver sección 5).
 
 > El proyecto original no se ha modificado. Siempre se trabaja sobre la copia del repositorio.
 
