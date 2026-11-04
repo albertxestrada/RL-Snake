@@ -265,32 +265,6 @@ flowchart LR
     style VAN fill:#fee2e2,stroke:#dc2626,stroke-width:3px
 ```
 
-### 6.2 Versión de texto
-
-```
- PERSONA 4 (independiente)
-   TODO 6 observación ──► TODO 7 recompensa ──► validar con PPO ───────────────┐
-                                                                               │
- PERSONA 1                    PERSONA 2                                        │
-   TODO 1 PolicyNet ──┐         TODO 2 reward_to_go ──┐                         │
-   TODO 3 collect_ep ─┴──┐                            └─► TODO 4 policy_loss   │
-                         │                                    │                │
-                         └──► validar en CartPole ◄───────────┘                │
-                                      │                                        │
-                                      ▼                                        │
-                          ★ REINFORCE vanilla funcionando ★                    │
-                                      │                                        │
- PERSONA 3                            │                                        │
-   TODO 5a ValueNet ──► TODO 5b baseline (necesita TODO 4) ──► con baseline    │
-                                      │                              │         │
-                                      └──────────────┬───────────────┘         │
-                                                     ▼                         │
-                                  EXPERIMENTOS (6 configs × 5 semillas) ◄──────┘
-                                                     │
-                                                     ▼
-                                       Gráficas y tabla ──► Informe + defensa
-```
-
 ### 6.3 Quién espera a quién
 
 | Persona | ¿Puede empezar ya? | ¿Qué le bloquea? | ¿A quién desbloquea? |
