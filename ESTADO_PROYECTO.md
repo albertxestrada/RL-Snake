@@ -1,7 +1,7 @@
 # Estado del proyecto · REINFORCE en el Snake (Lab 3.3)
 
 > Documento de seguimiento del equipo. Se actualiza en cada hito.
-> Última actualización: 2026-11-04 · Estado global: **análisis y reparto hechos, implementación sin empezar**
+> Última actualización: 2026-11-08 · Estado global: **análisis y reparto hechos; diseño del Snake (TODO 6–7) implementado y validado con PPO; TODO 1–5 pendientes**
 
 ## Equipo
 
@@ -12,7 +12,7 @@ Escribe tu nombre en la fila que te toque. El reparto es una propuesta: se puede
 | Persona 1 | _[escribe aquí tu nombre]_ |
 | Persona 2 | _[escribe aquí tu nombre]_ |
 | Persona 3 | _[escribe aquí tu nombre]_ |
-| Persona 4 | _[escribe aquí tu nombre]_ |
+| Persona 4 | Katherine Lorenzo |
 
 ---
 
@@ -59,6 +59,7 @@ Además, hay que **lanzar los experimentos, analizar los resultados, escribir el
 - Analizar el proyecto completo y entender qué archivos se usan y cuáles no.
 - Diseñar el reparto en 4 personas.
 - Preparar el `requirements.txt` reducido, el README del repo y este documento.
+- **Persona 4 (Katherine Lorenzo):** implementados `SnakeObservation` (15 valores: peligro en las 4 direcciones, dirección actual, lado de la manzana, vector a la manzana y longitud) y `SnakeReward` (sparse + shaping de ±0,05 por acercarse o alejarse de la manzana + coste de 0,002 por paso) en `snake_design.py`. Validado con PPO de SB3 (1 semilla, 100 000 pasos, manzanas por partida al final): `original/sparse` ≈ 2,2 · `custom/sparse` ≈ 21,1 · `custom/custom` ≈ 24,0. Es una prueba rápida con una sola semilla, no sustituye a la matriz completa de 5 semillas.
 
 
 ### Siguiente paso inmediato
@@ -74,7 +75,7 @@ Además, hay que **lanzar los experimentos, analizar los resultados, escribir el
 Marca con `x` lo que vaya terminando.
 
 **Preparación**
-- [ ] Nombres de las 4 personas escritos arriba
+- [ ] Nombres de las 3 personas escritos arriba
 - [ ] Repositorio creado y ramas por persona
 - [ ] Copia del proyecto original conservada
 - [ ] Archivos no usados movidos a la carpeta de respaldo
@@ -107,9 +108,9 @@ Marca con `x` lo que vaya terminando.
 - [ ] Sección del informe
 
 **Persona 4**
-- [ ] TODO 6 · `SnakeObservation`
-- [ ] TODO 7 · `SnakeReward`
-- [ ] Diseño validado con PPO
+- [x] TODO 6 · `SnakeObservation`
+- [x] TODO 7 · `SnakeReward`
+- [x] Diseño validado con PPO (prueba rápida de 1 semilla; falta la matriz completa)
 - [ ] Config `reinforce_baseline_custom_custom`
 - [ ] Ablación de recompensa (`distance` frente a `custom`)
 - [ ] Guion de la defensa

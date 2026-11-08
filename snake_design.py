@@ -37,14 +37,53 @@ class SnakeObservation(gym.ObservationWrapper):
       - ¿Qué tamaño de observación es razonable para una red pequeña?
     """
 
+    # OBS_SIZE = Es un 15 porque es la suma de las piezas que elegimos darle a la serpiente:
+    #
+    #   piezas                                  cuántos   por qué ese número
+    #   --------------------------------------  --------  ------------------------------------
+    #   peligro si voy a izq/der/abajo/arriba      4      hay 4 acciones: 1 pregunta por acción
+    #   dirección actual (one-hot)                 4      una de 4 direcciones: 4 casillas, solo una vale 1
+    #   manzana está a izq/der/abajo/arriba        4      4 preguntas de sí/no: una por dirección
+    #   vector cabeza -> manzana (Δx, Δy)          2      un valor por eje (x, y), normalizado
+    #   longitud de la serpiente                   1      un único valor, normalizado por el tamaño máximo posible
+    OBS_SIZE = 15
+
     def __init__(self, env: gym.Env):
         super().__init__(env)
-        # TODO 6: definid self.observation_space (spaces.Box con low, high, shape y dtype=np.float32).
-        raise NotImplementedError("TODO 6: define el espacio de observación")
+        self.observation_space = spaces.Box(-1.0, 1.0, shape=(self.OBS_SIZE,), dtype=np.float32)
+
+    @staticmethod
+    def _is_deadly(u, cell: tuple[int, int]) -> bool:
+        """True si meter la cabeza en `cell` termina la partida."""
+        x, y = cell
+        if not (0 <= x < u.grid_size and 0 <= y < u.grid_size):
+            return True                                   # Si se salio del grid, muerto
+        return cell in u.snake[:-1]                       # Si toca una casilla asociada a la serpiente, muerto
 
     def observation(self, obs: np.ndarray) -> np.ndarray:
-        # TODO 6: construid la observación a partir de self.env.unwrapped (ignorad `obs` si queréis).
-        raise NotImplementedError("TODO 6: construye la observación")
+        u = self.env.unwrapped
+        n = u.grid_size
+        hx, hy = u.snake[0]
+        ax, ay = u.apple
+
+        # Revisa si a la der, izq, arr, aba hay peligros, para reportarlo en el vector de observación
+        danger = [float(self._is_deadly(u, (hx + dx, hy + dy)))
+                  for dx, dy in (MOVES[a] for a in range(4))]
+
+        # Rellena el one hot de la dirección actual de la serpiente, segun la acción que tomó el agente.
+        direction = [1.0 if u.direction == a else 0.0 for a in range(4)]
+
+        # revisa si la manzana esta a la izquierda, derecha, arriba o abajo de la cabeza
+        apple_side = [float(ax < hx), float(ax > hx), float(ay > hy), float(ay < hy)]
+
+        # Distancia entre la cabeza y la manzana, normalizada por el tamaño del grid 
+        # (para mantener el observation space entre -1 y 1)
+        rel = [(ax - hx) / (n - 1), (ay - hy) / (n - 1)]
+
+        # Longitud de la serpiente, normalizada por el tamaño máximo posible (n * n)
+        length = [len(u.snake) / (n * n)]
+
+        return np.clip(np.array(danger + direction + apple_side + rel + length, dtype=np.float32), -1.0, 1.0)
 
 
 # =========================================================================== TODO 7
@@ -55,10 +94,26 @@ class SnakeReward(gym.Wrapper):
     exactamente lo que premiéis, aunque no sea lo que queríais.
     """
 
+    # Incentivo si se acerca o se aleja (negativo) de la manzana
+    SHAPING = 0.05
+    # Coste por paso (-), para evitar que el agente alargue la partida innecesariamente
+    STEP_COST = 0.002
+
+    @staticmethod
+    def _apple_distance(u) -> int:
+        hx, hy = u.snake[0]
+        # Calcula la distancia Manhattan entre la cabeza y la manzana,
+        # usando la fórmula |x1 - x2| + |y1 - y2|. (Distancia Manhattan)
+        return abs(u.apple[0] - hx) + abs(u.apple[1] - hy)
+
     def step(self, action):
+        u = self.env.unwrapped
+        old_dist = self._apple_distance(u)                  # antes de mover
         obs, reward, terminated, truncated, info = self.env.step(action)
-        # TODO 7: modificad `reward` usando el estado de self.env.unwrapped e `info`.
-        raise NotImplementedError("TODO 7: define tu recompensa")
+        if not terminated and reward == 0.0:                # paso común: ni comió ni murió
+            new_dist = self._apple_distance(u)
+            reward += self.SHAPING * (old_dist - new_dist)  # +SHAPING si se acerca, -SHAPING si se aleja
+            reward -= self.STEP_COST # Aplica el coste por un paso más
         return obs, reward, terminated, truncated, info
 
 

@@ -1,0 +1,13 @@
+# Python: archivos que genera el intérprete
+__pycache__/
+*.pyc
+
+# Entorno virtual
+.venv/
+
+# Resultados de entrenamiento (la gráfica final logs/lab_3_3.png sí se sube)
+logs/*
+!logs/lab_3_3.png
+
+# macOS
+.DS_Store

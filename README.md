@@ -3,7 +3,7 @@
 Implementación de REINFORCE desde cero (PyTorch + Gymnasium) aplicada a un Snake de 12 × 12, con observación y recompensa diseñadas por el equipo. Se compara con A2C y PPO de Stable-Baselines3.
 Máster en Computación y Sistemas Inteligentes · Universidad de Deusto.
 
-**Equipo:** [Nombre 1] · [Nombre 2] · [Nombre 3] · [Nombre 4]
+**Equipo:** [Nombre 1] · [Nombre 2] · [Nombre 3] · Katherine Lorenzo
 
 ## Instalación
 
@@ -87,9 +87,28 @@ logs/tb/lab_3_3/                                        TensorBoard
 
 ## Diseño del Snake
 
-**Observación (`custom`):** [describir: tamaño, qué contiene, por qué]
+**Observación (`custom`):** vector de 15 valores en [−1, 1].
 
-**Recompensa (`custom`):** [describir: términos, valores y justificación]
+| Posiciones | Contenido | Por qué |
+|---|---|---|
+| 0–3 | Peligro inmediato: 1 si dar ese paso (izquierda, derecha, abajo, arriba) mata por pared o cuerpo | El agente no tiene que deducir dónde están los muros ni su propio cuerpo; la cola se cuenta como segura porque se aparta al avanzar |
+| 4–7 | Dirección actual (one-hot) | Las acciones son absolutas e ir en sentido contrario mata; saber hacia dónde mira evita ese error |
+| 8–11 | La manzana está a la izquierda / derecha / abajo / arriba de la cabeza | Información relativa a la cabeza: sirve igual en cualquier punto del tablero |
+| 12–13 | Vector cabeza → manzana, normalizado | Da la magnitud de la distancia, además del lado |
+| 14 | Longitud / (tamaño del tablero)² | Indica cuánto espacio libre queda |
+
+Frente a la observación original (35 valores, con coordenadas absolutas y las últimas 30 acciones) es más pequeña y ya trae calculado lo difícil, que es saber si el siguiente paso es mortal.
+
+**Recompensa (`custom`):** parte de `sparse` (+1 al comer, −1 al morir) y en los pasos normales suma dos términos pequeños:
+
+| Término | Valor | Justificación |
+|---|---|---|
+| Progreso hacia la manzana | +0,05 si se acerca, −0,05 si se aleja | Da señal en los pasos sin premio. Al ser una diferencia de distancias, acercarse y alejarse en bucle suma cero, así que no se puede explotar dando vueltas |
+| Coste por paso | −0,002 | Evita que sea rentable alargar la partida sin comer |
+
+Los dos términos son mucho menores que +1 / −1 para que comer y no morir sigan siendo el objetivo (efecto cobra). Se desactivan en el paso en que come o muere. Frente a `distance` (±0,1 por paso) el shaping es la mitad de grande y se añade el coste por paso.
+
+**Prueba rápida con PPO** (1 semilla, 100 000 pasos, manzanas por partida al final): `original/sparse` ≈ 2,2 · `custom/sparse` ≈ 21,1 · `custom/custom` ≈ 24,0. Es solo una comprobación del diseño; los resultados definitivos son los de la tabla de abajo (5 semillas).
 
 ## Resultados
 
@@ -113,7 +132,7 @@ Media de las últimas 3 evaluaciones de cada semilla.
 | [Nombre 1] | `PolicyNet`, `collect_episode` | [ ] | [ ] |
 | [Nombre 2] | `reward_to_go`, `policy_loss` | [ ] | [ ] |
 | [Nombre 3] | `ValueNet`, baseline | [ ] | [ ] |
-| [Nombre 4] | `SnakeObservation`, `SnakeReward` | [ ] | [ ] |
+| Katherine Lorenzo | `SnakeObservation`, `SnakeReward` | [ ] | [ ] |
 
 ## Reproducibilidad
 
