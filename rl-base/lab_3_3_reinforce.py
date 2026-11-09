@@ -64,16 +64,21 @@ class PolicyNet(nn.Module):
         super().__init__()
         # TODO 1: una MLP con 2 capas ocultas de `hidden` unidades y activación tanh,
         #         y una capa de salida lineal con n_actions unidades.
-        raise NotImplementedError("TODO 1: define la red de política")
+        self.net = nn.Sequential(
+            nn.Linear(obs_dim, hidden),
+            nn.Tanh(),
+            nn.Linear(hidden, hidden),
+            nn.Tanh(),
+            nn.Linear(hidden, n_actions)
+        )
 
     def forward(self, obs: torch.Tensor) -> torch.Tensor:
         # TODO 1: devuelve los logits.
-        raise NotImplementedError("TODO 1: forward de la red de política")
+        return self.net(obs)
 
     def distribution(self, obs: torch.Tensor) -> torch.distributions.Categorical:
         """Distribución sobre acciones. Ya está hecha: usadla en collect_episode."""
         return torch.distributions.Categorical(logits=self.forward(obs))
-
 
 # =========================================================================== TODO 2
 def reward_to_go(rewards: list[float], gamma: float) -> torch.Tensor:
@@ -108,8 +113,53 @@ def collect_episode(env: gym.Env, policy: PolicyNet, seed: int | None = None) ->
         terminated (choque) y por truncated (demasiados pasos sin comer)? ¿Afecta a
         REINFORCE? ¿Y al baseline?
     """
+    obs_list = []
+    action_list = []
+    log_prob_list = []
+    reward_list = []
+    
+    obs, info = env.reset(seed=seed)
+    done = False
+    
+    while not done:
+        # 1. Convertimos la observación a tensor float32 para la red PyTorch
+        obs_tensor = torch.as_tensor(obs, dtype=torch.float32)
+        
+        # 2. Obtenemos la distribución de probabilidad de las acciones
+        dist = policy.distribution(obs_tensor)
+        
+        # 3. Muestreamos una acción y obtenemos su log_prob (conservando gradiente)
+        action = dist.sample()
+        log_prob = dist.log_prob(action)
+        
+        # 4. Ejecutamos la acción en el entorno
+        next_obs, reward, terminated, truncated, info = env.step(action.item())
+        
+        # 5. Guardamos la información del paso actual
+        obs_list.append(obs_tensor)
+        action_list.append(action)
+        log_prob_list.append(log_prob)
+        reward_list.append(float(reward))
+        
+        obs = next_obs
+        done = terminated or truncated
+
+    # Formateamos los datos requeridos como tensores según el docstring del profesor
+    obs_tensor = torch.stack(obs_list)
+    actions_tensor = torch.stack(action_list)
+    log_probs_tensor = torch.stack(log_prob_list)
+    
+    return {
+        "obs": obs_tensor,
+        "actions": actions_tensor,
+        "log_probs": log_probs_tensor,
+        "rewards": reward_list,
+        "return": sum(reward_list),
+        "length": len(reward_list),
+        "score": info.get("score", 0),
+    }
     # TODO 3
-    raise NotImplementedError("TODO 3: collect_episode")
+    #raise NotImplementedError("TODO 3: collect_episode")
 
 
 # =========================================================================== TODO 5 (red)
