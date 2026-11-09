@@ -3,7 +3,7 @@
 Implementación de REINFORCE desde cero (PyTorch + Gymnasium) aplicada a un Snake de 12 × 12, con observación y recompensa diseñadas por el equipo. Se compara con A2C y PPO de Stable-Baselines3.
 Máster en Computación y Sistemas Inteligentes · Universidad de Deusto.
 
-**Equipo:** [Nombre 1] · [Nombre 2] · [Nombre 3] · Katherine Lorenzo
+**Equipo:** [Mauro Cornejo] · [Alberto Estrada] · [Nombre 3] · Katherine Lorenzo
 
 ## Instalación
 
@@ -61,6 +61,8 @@ python lab_3_3_reinforce.py --seeds 0-4 --obs custom --reward sparse --lr 3e-4
 python lab_3_3_reinforce.py --seeds 0-4 --obs custom --reward distance --baseline
 ```
 
+> **Cuidado:** el nombre de la carpeta de resultados no incluye `--no-normalize` ni `--lr`, así que cada ejecución sobrescribe la anterior de la misma configuración. Renombra la carpeta antes de lanzar la siguiente, por ejemplo: `mv logs/lab_3_3/reinforce_custom_sparse logs/lab_3_3/reinforce_custom_sparse_norm`.
+
 Gráficas y tabla (la métrica es **manzanas por partida**, no el retorno):
 
 ```bash
@@ -117,11 +119,13 @@ Los dos términos son mucho menores que +1 / −1 para que comer y no morir siga
 | Configuración | Semillas | Manzanas (media) | IC 95 % | IQM |
 |---|---|---|---|---|
 | reinforce_original_sparse | 5 | [ ] | [ ] | [ ] |
-| reinforce_custom_sparse | 5 | [ ] | [ ] | [ ] |
+| reinforce_custom_sparse | 5 | 13,90 | [12,77, 14,76] | 14,20 |
 | reinforce_baseline_custom_sparse | 5 | [ ] | [ ] | [ ] |
 | reinforce_baseline_custom_custom | 5 | [ ] | [ ] | [ ] |
 | ppo_custom_sparse | 5 | [ ] | [ ] | [ ] |
-| a2c_custom_sparse | 5 | [ ] | [ ] | [ ] |
+| a2c_custom_sparse | 5 | 21,48 | [20,02, 22,93] | 21,59 |
+| reinforce_custom_sparse_sin_norm (ablación) | 5 | 10,63 | [5,41, 14,05] | 12,79 |
+
 
 Media de las últimas 3 evaluaciones de cada semilla.
 
@@ -129,11 +133,11 @@ Media de las últimas 3 evaluaciones de cada semilla.
 
 | Integrante | Código | Experimentos | Informe |
 |---|---|---|---|
-| [Nombre 1] | `PolicyNet`, `collect_episode` | [ ] | [ ] |
-| [Nombre 2] | `reward_to_go`, `policy_loss` | [ ] | [ ] |
+| [Mauro Cornejo] | `PolicyNet`, `collect_episode` | [ ] | [ ] |
+| | [Alberto Estrada] | `reward_to_go`, `policy_loss` | `reinforce_custom_sparse` (con y sin `--no-normalize`), `a2c_custom_sparse` | [ ] |
 | [Nombre 3] | `ValueNet`, baseline | [ ] | [ ] |
 | Katherine Lorenzo | `SnakeObservation`, `SnakeReward` | [ ] | [ ] |
 
 ## Reproducibilidad
 
-Semillas 0–4, 200 000 pasos de entorno, 20 partidas de evaluación cada 25 000 pasos (política determinista). Hiperparámetros de cada ejecución en su `config.json`.
+Semillas 0–4, 200 000 pasos de entorno, 20 partidas de evaluación cada 25 000 pasos (política determinista). Hiperparámetros de cada ejecución en su `config.json`. Cada semilla de REINFORCE con 200 000 pasos en el Snake tarda unos 25 s en nuestro equipo.

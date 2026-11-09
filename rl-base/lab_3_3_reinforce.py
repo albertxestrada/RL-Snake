@@ -89,8 +89,18 @@ def reward_to_go(rewards: list[float], gamma: float) -> torch.Tensor:
     Ejemplo: reward_to_go([1, 1, 1], 0.5) -> tensor([1.75, 1.50, 1.00])
     Pista: se calcula en una sola pasada recorriendo el episodio hacia atrás.
     """
-    # TODO 2
-    raise NotImplementedError("TODO 2: reward_to_go")
+
+    # TODO 2: se usa la recurrencia, por eso se recorre el episodio al revés.
+
+    # una casilla por paso, se rellena de atrás hacia adelante
+    returns = [0.0] * len(rewards)
+    # G del paso siguiente; tras el último paso no queda nada: 0
+    g = 0.0
+    for t in reversed(range(len(rewards))):
+        # recompensa de este paso + futuro descontado
+        g = rewards[t] + gamma * g
+        returns[t] = g
+    return torch.tensor(returns, dtype=torch.float32)
 
 
 # =========================================================================== TODO 3
@@ -196,8 +206,28 @@ def policy_loss(episodes: list[dict], gamma: float, value_net: ValueNet | None =
       - loss_v = error cuadrático medio entre v̂(Sₜ) y Gₜ.
       - Decidid y justificad en el informe si normalizáis G, Â o ninguno.
     """
-    # TODO 4 / TODO 5
-    raise NotImplementedError("TODO 4: policy_loss")
+
+    # TODO 5 (Persona 3): aquí irá la branch con baseline. 
+    
+    if value_net is not None:
+        raise NotImplementedError("TODO 5: rama con baseline (Persona 3)")
+    
+    # TODO 4: Todos los pasos del lote, con los episodios concatenados en un solo vector.
+
+    returns = torch.cat([reward_to_go(e["rewards"], gamma) for e in episodes])
+    # Los mismos pasos, en el mismo orden. Conservan el gradiente de collect_episode.
+
+    log_probs = torch.cat([e["log_probs"] for e in episodes])
+
+    # Normalizar G (media 0, desviación 1) reduce la varianza del gradiente
+    if normalize:
+        returns = (returns - returns.mean()) / (returns.std() + 1e-8)
+
+    # El optimizador MINIMIZA, pero queremos MAXIMIZAR J.
+
+    loss_pi = -(log_probs * returns).mean() # promedio sobre todos los pasos del lote
+    # sin red de valor no hay loss_v
+    return loss_pi, None
 
 
 # =========================================================================== (hecho)

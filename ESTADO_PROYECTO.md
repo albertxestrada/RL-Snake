@@ -9,8 +9,8 @@ Escribe tu nombre en la fila que te toque. El reparto es una propuesta: se puede
 
 | Rol | Nombre |
 |---|---|
-| Persona 1 | _[escribe aquí tu nombre]_ |
-| Persona 2 | _[escribe aquí tu nombre]_ |
+| Persona 1 | Mauro Cornejo |
+| Persona 2 | Alberto Estrada |
 | Persona 3 | _[escribe aquí tu nombre]_ |
 | Persona 4 | Katherine Lorenzo |
 
@@ -60,6 +60,7 @@ Además, hay que **lanzar los experimentos, analizar los resultados, escribir el
 - Diseñar el reparto en 4 personas.
 - Preparar el `requirements.txt` reducido, el README del repo y este documento.
 - **Persona 4 (Katherine Lorenzo):** implementados `SnakeObservation` (15 valores: peligro en las 4 direcciones, dirección actual, lado de la manzana, vector a la manzana y longitud) y `SnakeReward` (sparse + shaping de ±0,05 por acercarse o alejarse de la manzana + coste de 0,002 por paso) en `snake_design.py`. Validado con PPO de SB3 (1 semilla, 100 000 pasos, manzanas por partida al final): `original/sparse` ≈ 2,2 · `custom/sparse` ≈ 21,1 · `custom/custom` ≈ 24,0. Es una prueba rápida con una sola semilla, no sustituye a la matriz completa de 5 semillas.
+- **Persona 2 (Alberto Estrada):** implementados `reward_to_go` y `policy_loss` (versión vanilla, con normalización opcional de G) en `lab_3_3_reinforce.py`; la rama con baseline queda para la Persona 3 (TODO 5). Validado con `--check` y en CartPole-v1 (llega al máximo de 500). Experimentos en el Snake (`--obs custom --reward sparse`, 5 semillas, 200 000 pasos, manzanas por partida, media de las últimas 3 evaluaciones): A2C 21,48 · REINFORCE con normalización 13,90 · REINFORCE sin normalización 10,63. Los intervalos de A2C y de REINFORCE no se solapan; los de con y sin normalización sí, aunque sin normalizar una semilla de cinco no aprende.
 
 
 ### Siguiente paso inmediato
@@ -92,11 +93,11 @@ Marca con `x` lo que vaya terminando.
 - [ ] Sección del informe
 
 **Persona 2**
-- [ ] TODO 2 · `reward_to_go`
-- [ ] TODO 4 · `policy_loss` vanilla
-- [ ] Configs `reinforce_custom_sparse` y `a2c_custom_sparse`
-- [ ] Ablación de normalización (`--no-normalize`)
-- [ ] Gráficas y tabla de resultados
+- [x] TODO 2 · `reward_to_go`
+- [x] TODO 4 · `policy_loss` vanilla
+- [x] Configs `reinforce_custom_sparse` y `a2c_custom_sparse`
+- [x] Ablación de normalización (`--no-normalize`)
+- [ ] Gráficas y tabla de resultados (hechas solo con mis 3 configuraciones; falta la comparación del equipo)
 - [ ] Sección del informe
 
 **Persona 3**
@@ -122,6 +123,7 @@ Marca con `x` lo que vaya terminando.
 - [ ] Revisión cruzada del informe
 - [ ] Informe ≤ 4 páginas
 - [ ] Ensayo cruzado de la defensa
+- [ ] Acordar cómo juntar los resultados (`logs/lab_3_3/`) de las 4 personas (los `logs/` no van por git)
 
 ---
 
