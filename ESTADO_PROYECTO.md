@@ -11,7 +11,7 @@ Escribe tu nombre en la fila que te toque. El reparto es una propuesta: se puede
 |---|---|
 | Persona 1 | _[escribe aquí tu nombre]_ |
 | Persona 2 | _[escribe aquí tu nombre]_ |
-| Persona 3 | _[escribe aquí tu nombre]_ |
+| Persona 3  |Xabier Abad |
 | Persona 4 | Katherine Lorenzo |
 
 ---

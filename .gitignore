@@ -6,8 +6,8 @@ __pycache__/
 .venv/
 
 # Resultados de entrenamiento (la gráfica final logs/lab_3_3.png sí se sube)
-logs/*
-!logs/lab_3_3.png
+*/logs/*
+!*/logs/lab_3_3.png
 
 # macOS
 .DS_Store
