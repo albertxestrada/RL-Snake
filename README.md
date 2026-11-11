@@ -3,15 +3,28 @@
 Implementación de REINFORCE desde cero (PyTorch + Gymnasium) aplicada a un Snake de 12 × 12, con observación y recompensa diseñadas por el equipo. Se compara con A2C y PPO de Stable-Baselines3.
 Máster en Computación y Sistemas Inteligentes · Universidad de Deusto.
 
-**Equipo:** [Nombre 1] · [Nombre 2] · [Nombre 3] · Katherine Lorenzo
+**Equipo:** [Nombre 1] · [Nombre 2] · Xabier Abad · Katherine Lorenzo
 
 ## Instalación
 
+**Linux / macOS / WSL (bash):**
+
 ```bash
-python -m venv .venv && source .venv/bin/activate     # Windows: .venv\Scripts\activate
+python -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
 python snake_env.py                                   # comprobación rápida del entorno
 ```
+
+**Windows (PowerShell):**
+
+```powershell
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+pip install -r requirements.txt
+python rl-base/snake_env.py                                   # comprobación rápida del entorno
+```
+
+Si PowerShell avisa de que la ejecución de scripts está deshabilitada, ejecuta una vez `Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned` y vuelve a activar el entorno. En CMD el entorno se activa con `.venv\Scripts\activate.bat`. Si `python` no se encuentra, prueba con `py -m venv .venv`.
 
 Python 3.10–3.12. Todos los comandos se ejecutan desde la raíz del repo. Los resultados se guardan en `logs/`.
 
@@ -131,7 +144,7 @@ Media de las últimas 3 evaluaciones de cada semilla.
 |---|---|---|---|
 | [Nombre 1] | `PolicyNet`, `collect_episode` | [ ] | [ ] |
 | [Nombre 2] | `reward_to_go`, `policy_loss` | [ ] | [ ] |
-| [Nombre 3] | `ValueNet`, baseline | [ ] | [ ] |
+| Xabier Abad | `ValueNet`, baseline | [ ] | [ ] |
 | Katherine Lorenzo | `SnakeObservation`, `SnakeReward` | [ ] | [ ] |
 
 ## Reproducibilidad
