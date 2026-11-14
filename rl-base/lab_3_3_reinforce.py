@@ -179,11 +179,17 @@ class ValueNet(nn.Module):
     def __init__(self, obs_dim: int, hidden: int = 64):
         super().__init__()
         # TODO 5: MLP con 2 capas ocultas (tanh) y una salida escalar.
-        raise NotImplementedError("TODO 5: define la red de valor")
+        self.net = nn.Sequential(
+            nn.Linear(obs_dim, hidden),
+            nn.Tanh(),
+            nn.Linear(hidden, hidden),
+            nn.Tanh(),
+            nn.Linear(hidden, 1)  # salida escalar
+        )
 
     def forward(self, obs: torch.Tensor) -> torch.Tensor:
         # TODO 5: devuelve un tensor [B] (ojo con la última dimensión).
-        raise NotImplementedError("TODO 5: forward de la red de valor")
+        return self.net(obs).squeeze(-1)  # eliminar la última dimensión para obtener [B]
 
 
 # =========================================================================== TODO 4 y 5
