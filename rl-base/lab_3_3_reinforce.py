@@ -212,11 +212,6 @@ def policy_loss(episodes: list[dict], gamma: float, value_net: ValueNet | None =
       - loss_v = error cuadrático medio entre v̂(Sₜ) y Gₜ.
       - Decidid y justificad en el informe si normalizáis G, Â o ninguno.
     """
-
-    # TODO 5 (Persona 3): aquí irá la branch con baseline. 
-    
-    if value_net is not None:
-        raise NotImplementedError("TODO 5: rama con baseline (Persona 3)")
     
     # TODO 4: Todos los pasos del lote, con los episodios concatenados en un solo vector.
 
@@ -225,6 +220,30 @@ def policy_loss(episodes: list[dict], gamma: float, value_net: ValueNet | None =
 
     log_probs = torch.cat([e["log_probs"] for e in episodes])
 
+    # TODO 5 (Persona 3): aquí irá la branch con baseline. 
+    
+    if value_net is not None:
+        # 1. Las situaciones de todos los pasos del lote, en un solo tensor [N, obs_dim]
+        obs = torch.cat([e["obs"] for e in episodes])
+
+        # 2. Lo normal en cada paso
+        values = value_net(obs)
+
+        # 3. Ventaja = Los puntos conseguidos - lo normal
+        adv = returns - values.detach()
+
+        # 4. Normalizar la ventaja
+        if normalize:
+            adv = (adv - adv.mean()) / (adv.std() + 1e-8)
+
+        # 5. Pérdida del actor con la ventaja
+        loss_pi = -(log_probs * adv).mean()
+
+        # 6. Pérdida de la red de valor: cuanto se equivoca
+        loss_v = ((values - returns)**2).mean()
+
+        return loss_pi, loss_v
+        
     # Normalizar G (media 0, desviación 1) reduce la varianza del gradiente
     if normalize:
         returns = (returns - returns.mean()) / (returns.std() + 1e-8)
