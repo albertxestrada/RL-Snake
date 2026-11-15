@@ -61,6 +61,7 @@ Además, hay que **lanzar los experimentos, analizar los resultados, escribir el
 - Preparar el `requirements.txt` reducido, el README del repo y este documento.
 - **Persona 4 (Katherine Lorenzo):** implementados `SnakeObservation` (15 valores: peligro en las 4 direcciones, dirección actual, lado de la manzana, vector a la manzana y longitud) y `SnakeReward` (sparse + shaping de ±0,05 por acercarse o alejarse de la manzana + coste de 0,002 por paso) en `snake_design.py`. Validado con PPO de SB3 (1 semilla, 100 000 pasos, manzanas por partida al final): `original/sparse` ≈ 2,2 · `custom/sparse` ≈ 21,1 · `custom/custom` ≈ 24,0. Es una prueba rápida con una sola semilla, no sustituye a la matriz completa de 5 semillas.
 - **Persona 2 (Alberto Estrada):** implementados `reward_to_go` y `policy_loss` (versión vanilla, con normalización opcional de G) en `lab_3_3_reinforce.py`; la rama con baseline queda para la Persona 3 (TODO 5). Validado con `--check` y en CartPole-v1 (llega al máximo de 500). Experimentos en el Snake (`--obs custom --reward sparse`, 5 semillas, 200 000 pasos, manzanas por partida, media de las últimas 3 evaluaciones): A2C 21,48 · REINFORCE con normalización 13,90 · REINFORCE sin normalización 10,63. Los intervalos de A2C y de REINFORCE no se solapan; los de con y sin normalización sí, aunque sin normalizar una semilla de cinco no aprende.
+- **Persona 3 (Xabier Abad):** implementados `ValueNet` (MLP de 2 capas ocultas con tanh y salida escalar, `squeeze(-1)` para devolver [B]) y la rama con baseline de `policy_loss`: ventaja Âₜ = Gₜ − v̂(Sₜ) con `detach()`, normalización de Â (no de G) y `loss_v` como MSE entre v̂ y G sin normalizar. Validado con `--check` (la pérdida del actor no entrena al crítico) y en CartPole-v1 con `--baseline` (1 semilla, llega a 500 a los ~25 000 pasos y se mantiene desde los 150 000). Rama `feat/persona3/xa/baseline` con PR abierto a `main`.
 
 
 ### Siguiente paso inmediato
@@ -101,8 +102,8 @@ Marca con `x` lo que vaya terminando.
 - [ ] Sección del informe
 
 **Persona 3**
-- [ ] TODO 5 · `ValueNet` y baseline
-- [ ] Sin fugas de gradiente (`--check`)
+- [x] TODO 5 · `ValueNet` y baseline
+- [x] Sin fugas de gradiente (`--check`)
 - [ ] Config `reinforce_baseline_custom_sparse`
 - [ ] Ablación G / A / nada
 - [ ] Plantilla e integración del informe
