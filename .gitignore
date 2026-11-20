@@ -8,7 +8,7 @@ __pycache__/
 # Resultados de entrenamiento (se permiten las gráficas indicadas)
 */logs/*
 !*/logs/lab_3_3.png
-!*/logs/ablation_lr/comparacion_lr.png
-
+!*/logs/ablation_lr/ablation_lr.png
+!*/logs/ablation_lr.png
 # macOS
 .DS_Store
