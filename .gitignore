@@ -5,9 +5,10 @@ __pycache__/
 # Entorno virtual
 .venv/
 
-# Resultados de entrenamiento (la gráfica final logs/lab_3_3.png sí se sube)
+# Resultados de entrenamiento (se permiten las gráficas indicadas)
 */logs/*
 !*/logs/lab_3_3.png
+!*/logs/ablation_lr/comparacion_lr.png
 
 # macOS
 .DS_Store
