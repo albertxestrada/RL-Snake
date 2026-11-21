@@ -220,9 +220,12 @@ def policy_loss(episodes: list[dict], gamma: float, value_net: ValueNet | None =
 
     log_probs = torch.cat([e["log_probs"] for e in episodes])
 
-    # TODO 5 (Persona 3): aquí irá la branch con baseline. 
+    # TODO 5 (Persona 3): aquí irá la branch con baseline y con variantes de normalización. 
     
     if value_net is not None:
+        # Variante g: Normalizar G antes de todo (la red aprenderá ese G normalizado)
+        if normalize == 'g':
+            returns = (returns - returns.mean()) / (returns.std() + 1e-8)
         # 1. Las situaciones de todos los pasos del lote, en un solo tensor [N, obs_dim]
         obs = torch.cat([e["obs"] for e in episodes])
 
@@ -233,7 +236,7 @@ def policy_loss(episodes: list[dict], gamma: float, value_net: ValueNet | None =
         adv = returns - values.detach()
 
         # 4. Normalizar la ventaja
-        if normalize:
+        if normalize is True or normalize == 'adv':
             adv = (adv - adv.mean()) / (adv.std() + 1e-8)
 
         # 5. Pérdida del actor con la ventaja
@@ -265,8 +268,12 @@ def make_env(args) -> gym.Env:
 def config_name(args) -> str:
     name = "reinforce_baseline" if args.baseline else "reinforce"
     if args.env == "snake":
-        return f"{name}_{args.obs}_{args.reward}"
-    return f"{name}_{args.env}"
+        name = f"{name}_{args.obs}_{args.reward}"
+    else:
+        name = f"{name}_{args.env}"
+    if args.norm is not None:
+        name += f"_norm-{args.norm}"
+    return name
 
 
 @torch.no_grad()
@@ -340,7 +347,8 @@ def train(args, seed: int) -> None:
             writer.add_scalar("rollout/ep_return", ep["return"], steps)
             writer.add_scalar("rollout/ep_score", ep.get("score", 0), steps)
 
-        loss_pi, loss_v = policy_loss(batch, args.gamma, value_net, args.normalize)
+        norm = args.norm if (args.baseline and args.norm is not None) else args.normalize
+        loss_pi, loss_v = policy_loss(batch, args.gamma, value_net, norm)
         opt.zero_grad()
         loss_pi.backward()
         opt.step()
@@ -475,6 +483,8 @@ def main():
     p.add_argument("--hidden", type=int, default=64)
     p.add_argument("--batch-episodes", type=int, default=8, help="partidas por actualización")
     p.add_argument("--no-normalize", dest="normalize", action="store_false")
+    p.add_argument("--norm", default=None, choices=["g", "adv", "none"],
+                help="con --baseline: qué se normaliza (ablación). Sin ponerlo, igual que antes")
     p.add_argument("--eval-every", type=int, default=25_000)
     p.add_argument("--eval-episodes", type=int, default=20)
     args = p.parse_args()
