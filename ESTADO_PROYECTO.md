@@ -105,7 +105,7 @@ Marca con `x` lo que vaya terminando.
 - [x] TODO 5 · `ValueNet` y baseline
 - [x] Sin fugas de gradiente (`--check`)
 - [x] Config `reinforce_baseline_custom_sparse`
-- [ ] Ablación G / A / nada
+- [x] Ablación G / A / nada
 - [ ] Plantilla e integración del informe
 - [ ] Sección del informe
 
