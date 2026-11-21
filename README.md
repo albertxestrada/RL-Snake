@@ -131,14 +131,16 @@ Los dos términos son mucho menores que +1 / −1 para que comer y no morir siga
 
 | Configuración | Semillas | Manzanas (media) | IC 95 % | IQM |
 |---|---|---|---|---|
-| reinforce_original_sparse | 5 | [ ] | [ ] | [ ] |
+| reinforce_original_sparse (lr=1e-3) | 5 | 0,22 | [0,15; 0,30] | 0,22 |
+| reinforce_original_sparse (lr=1e-4) | 5 | 0,13 | [0,10; 0,16] | 0,14 |
+| reinforce_original_sparse (lr=3e-3) | 5 | 0,50 | [0,21; 0,86] | 0,43 |
+| reinforce_original_sparse (lr=1e-2) | 5 | 0,11 | [0,05; 0,15] | 0,12 |
 | reinforce_custom_sparse | 5 | 13,90 | [12,77, 14,76] | 14,20 |
 | reinforce_baseline_custom_sparse | 5 | [ ] | [ ] | [ ] |
 | reinforce_baseline_custom_custom | 5 | [ ] | [ ] | [ ] |
-| ppo_custom_sparse | 5 | [ ] | [ ] | [ ] |
+| ppo_custom_sparse | 5 | 25,10 | [23,95; 26,06] | 25,44 |
 | a2c_custom_sparse | 5 | 21,48 | [20,02, 22,93] | 21,59 |
 | reinforce_custom_sparse_sin_norm (ablación) | 5 | 10,63 | [5,41, 14,05] | 12,79 |
-
 
 Media de las últimas 3 evaluaciones de cada semilla.
 
@@ -146,8 +148,8 @@ Media de las últimas 3 evaluaciones de cada semilla.
 
 | Integrante | Código | Experimentos | Informe |
 |---|---|---|---|
-| [Mauro Cornejo] | `PolicyNet`, `collect_episode` | [ ] | [ ] |
-| | [Alberto Estrada] | `reward_to_go`, `policy_loss` | `reinforce_custom_sparse` (con y sin `--no-normalize`), `a2c_custom_sparse` | [ ] |
+| Mauro Cornejo | `PolicyNet`, `collect_episode` | `reinforce_original_sparse`, `ppo_custom_sparse`, ablación de `--lr` | Algoritmo y entorno |
+|Alberto Estrada | [ ] | `reward_to_go`, `policy_loss` | `reinforce_custom_sparse` (con y sin `--no-normalize`), `a2c_custom_sparse` | [ ] |
 | Xabier Abad | `ValueNet`, baseline | [ ] | [ ] |
 | Katherine Lorenzo | `SnakeObservation`, `SnakeReward` | [ ] | [ ] |
 
